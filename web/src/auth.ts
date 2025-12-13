@@ -1,9 +1,4 @@
 import { betterAuth } from "better-auth";
-import type {
-  SendVerificationEmailParams,
-  SendResetPasswordParams,
-} from "better-auth";
-
 import { nextCookies } from "better-auth/next-js";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 
@@ -15,6 +10,22 @@ import { expo } from "@better-auth/expo";
 import { getUserRole } from "@/backend/services/auth";
 import { sendEmail } from "./lib/email";
 import { ResetPasswordEmail } from "./templates/ResetPasswordEmail";
+import { VerifyEmailEmail } from "./templates/VerifyEmailEmail";
+
+
+type AuthUserMinimal = { email: string; name?: string | null };
+
+type VerificationEmailArgs = {
+  user: AuthUserMinimal;
+  url: string;
+  token: string;
+};
+
+type ResetPasswordArgs = {
+  user: AuthUserMinimal;
+  url: string;
+  token: string;
+};
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
@@ -23,23 +34,27 @@ export const auth = betterAuth({
     provider: "mongodb",
   }),
 
-  emailAndPassword: {
-    enabled: true,
+  emailVerification: {
+    sendOnSignIn: true,
 
-    requireEmailVerification: true,
-
-    sendVerificationEmail: async ({ user, url }: SendVerificationEmailParams) => {
+    sendVerificationEmail: async ({ user, url }) => {
       void sendEmail({
         to: user.email,
         subject: "Confirme seu email — Núcleo Alma",
-        react: ResetPasswordEmail({
+        react: VerifyEmailEmail({
           name: user.name ?? user.email,
-          resetUrl: url,
+          verifyUrl: url,
         }),
       });
     },
 
-    sendResetPassword: async ({ user, url }: SendResetPasswordParams) => {
+  },
+
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: true,
+
+    sendResetPassword: async ({ user, url }: ResetPasswordArgs) => {
       void sendEmail({
         to: user.email,
         subject: "Redefinir senha — Núcleo Alma",
@@ -50,49 +65,24 @@ export const auth = betterAuth({
       });
     },
 
-    onPasswordReset: async ({ user }) => {
-      console.info("✅ [AUTH] Senha redefinida com sucesso:", user.email);
+    onPasswordReset: async ({ user }: { user: AuthUserMinimal }) => {
+      console.info("senha redefinida com sucesso:", user.email);
     },
   },
 
   user: {
-    deleteUser: {
-      enabled: true,
-    },
-
-    changeEmail: {
-      enabled: true,
-      // Quando vocês forem implementar:
-      // sendChangeEmailVerification: async ({ user, newEmail, url }) => {
-      //   void sendEmail({
-      //     to: user.email,
-      //     subject: "Aprovar mudança de email — Núcleo Alma",
-      //     html: `<p>Clique para aprovar a mudança para ${newEmail}:</p><a href="${url}">Aprovar</a>`,
-      //   });
-      // },
-    },
+    deleteUser: { enabled: true },
+    changeEmail: { enabled: true },
   },
 
   plugins: [
     expo(),
-
     customSession(async ({ user, session }) => {
       const role = await getUserRole(session.userId);
-      return {
-        role,
-        user,
-        session,
-      };
+      return { role, user, session };
     }),
-
     nextCookies(),
   ],
 
-  trustedOrigins: [
-    "nucleoalma://",
-    "nucleoalma://*",
-    // se tiver web:
-    // "http://localhost:3000",
-    // "https://seu-dominio.com",
-  ],
+  trustedOrigins: ["nucleoalma://", "nucleoalma://*"],
 });
