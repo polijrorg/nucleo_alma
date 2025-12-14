@@ -19,6 +19,7 @@ interface AuthContextType {
   signOut: () => Promise<void>
   signInWithGoogle: () => Promise<{ success: boolean; error?: string }>
   refreshSession: () => Promise<void>
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -143,6 +144,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const resetPassword = async (email: string) => {
+    try {
+      const result = await authClient.forgetPassword({
+        email,
+        redirectTo: `movicare://reset-password` 
+      })
+
+      if (result.error) {
+        return { success: false, error: result.error.message }
+      }
+
+      return { success: true }
+    } catch (error) {
+      console.error('Reset password error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
+      return { success: false, error: errorMessage }
+    }
+  }
+
   const signOut = async () => {
     try {
       await authClient.signOut()
@@ -164,6 +184,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut,
       signInWithGoogle,
       refreshSession,
+      resetPassword, 
     }}>
       {children}
     </AuthContext.Provider>
