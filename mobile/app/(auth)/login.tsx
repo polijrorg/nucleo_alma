@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { View, TextInput, TouchableOpacity, Text, Alert, ActivityIndicator } from "react-native";
+import { View, TextInput, TouchableOpacity, Text, Alert, ActivityIndicator, Image } from "react-native";
 import { useAuth } from "~/contexts/AuthContext";
+import { Activity, Mail, Lock, ArrowRight } from "lucide-react-native"; 
+import { router } from 'expo-router';
 
 export default function LoginScreen() {
-  const { signIn, signInWithGoogle, isLoading: authLoading } = useAuth();
+  const { signIn, isLoading: authLoading } = useAuth();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,124 +13,115 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
+      Alert.alert("Erro", "Por favor, preencha todos os campos");
       return;
     }
 
     setIsLoading(true);
-    
     const result = await signIn(email, password);
-    console.log(result)
     
     if (!result.success) {
-      Alert.alert("Login Failed", result.error || "An error occurred");
+      Alert.alert("Falha no Login", result.error || "Ocorreu um erro");
     }
-    // If successful, the AuthProvider will handle navigation
-    
-    setIsLoading(false);
-  };
-
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    
-    const result = await signInWithGoogle();
-    
-    if (!result.success) {
-      Alert.alert("Login Failed", result.error || "Google login failed");
-    }
-    
     setIsLoading(false);
   };
 
   if (authLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-        <Text style={{ marginTop: 10 }}>Loading...</Text>
+      <View className="flex-1 justify-center items-center bg-slate-50">
+        <ActivityIndicator size="large" color="#0d9488" />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 p-5 justify-center">
-      <Text className="font-bold" style={{ fontSize: 32, marginBottom: 40, textAlign: 'center' }}>
-        Sign In
-      </Text>
-      
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          padding: 15,
-          marginBottom: 15,
-          borderRadius: 8,
-          fontSize: 16,
-        }}
-      />
-      
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          padding: 15,
-          marginBottom: 20,
-          borderRadius: 8,
-          fontSize: 16,
-        }}
-      />
-      
-      <TouchableOpacity
-        onPress={handleLogin}
-        disabled={isLoading}
-        style={{
-          backgroundColor: isLoading ? '#ccc' : '#007bff',
-          padding: 15,
-          borderRadius: 8,
-          marginBottom: 15,
-        }}
-      >
-        {isLoading ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Text style={{ color: 'white', textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>
-            Sign In
-          </Text>
-        )}
-      </TouchableOpacity>
-      
-      <TouchableOpacity
-        onPress={handleGoogleLogin}
-        disabled={isLoading}
-        style={{
-          backgroundColor: isLoading ? '#ccc' : '#db4437',
-          padding: 15,
-          borderRadius: 8,
-          marginBottom: 20,
-        }}
-      >
-        {isLoading ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Text style={{ color: 'white', textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>
-            Sign In with Google
-          </Text>
-        )}
-      </TouchableOpacity>
-      
-      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <Text>Não tem uma conta? </Text>
-        {/* <Link href="/(auth)/signup" style={{ color: '#007bff', fontWeight: 'bold' }}>
-          Sign Up
-        </Link> */}
+    <View className="flex-1 bg-slate-50 justify-center px-4">
+      <View className="items-center mb-8">
+        <View className="w-20 h-20 bg-gradient-to-br from-blue-500 to-green-600 rounded-2xl justify-center items-center shadow-lg mb-4">
+           <Activity size={40} color="white" />
+        </View>
+
+        <Text className="text-3xl font-bold text-slate-800">
+          MoviCare
+        </Text>
+        <Text className="text-slate-500 mt-1 text-center">
+          Sua jornada de reabilitação começa aqui
+        </Text>
+      </View>
+
+      {/* Card de Login */}
+      <View className="bg-white rounded-3xl p-6 shadow-sm shadow-slate-300">
+        
+        <View className="items-center mb-6">
+          <Text className="text-xl font-bold text-slate-800">Entrar</Text>
+          <Text className="text-slate-400 text-sm mt-1">Acesse sua conta para continuar</Text>
+        </View>
+
+        {/* Seção do Email */}
+        <View className="mb-4">
+          <Text className="text-slate-700 font-medium mb-2 ml-1">Email</Text>
+          <View className="flex-row items-center border border-slate-200 rounded-xl px-4 py-3 bg-white focus:border-teal-500">
+            <Mail size={20} color="#94a3b8" style={{ marginRight: 10 }} />
+            <TextInput
+              placeholder="seu@email.com"
+              placeholderTextColor="#cbd5e1"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              className="flex-1 text-slate-700 text-base"
+            />
+          </View>
+        </View>
+
+        {/* Seção para Senha */}
+        <View className="mb-6">
+          <Text className="text-slate-700 font-medium mb-2 ml-1">Senha</Text>
+          <View className="flex-row items-center border border-slate-200 rounded-xl px-4 py-3 bg-white focus:border-teal-500">
+            <Lock size={20} color="#94a3b8" style={{ marginRight: 10 }} />
+            <TextInput
+              placeholder="Mínimo 6 caracteres"
+              placeholderTextColor="#cbd5e1"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              className="flex-1 text-slate-700 text-base"
+            />
+          </View>
+        </View>
+
+        <View className="mb-4 flex-row justify-end">
+          <TouchableOpacity onPress={() => router.push('/(auth)/recuperar-senha')}>
+            <Text className="text-teal-500 font-medium">Esqueceu sua senha?</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Botão Entrar */}
+        <TouchableOpacity
+          onPress={handleLogin}
+          disabled={isLoading}
+          className={`flex-row justify-center items-center py-4 rounded-xl mb-6 ${
+            isLoading ? "bg-teal-300" : "bg-gradient-to-r from-blue-500 to-green-600"
+          }`}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <>
+              <Text className="text-white font-bold text-lg mr-2">Entrar</Text>
+              <ArrowRight size={20} color="white" strokeWidth={3} />
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* Direcionamento para o cadastro */}
+        <View className="flex-row justify-center mt-2">
+          <Text className="text-slate-500">Não tem conta? </Text>
+          <TouchableOpacity onPress={() => router.push('/(auth)/cadastro')}> 
+           <Text className="text-teal-500 font-bold">Cadastre-se</Text>
+          </TouchableOpacity>
+        </View>
+
       </View>
     </View>
   );
