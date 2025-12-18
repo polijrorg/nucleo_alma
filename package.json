@@ -9,7 +9,11 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-        "@prisma/client"
+      "@prisma/client"
     ]
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "axios": "^1.13.2"
   }
 }
