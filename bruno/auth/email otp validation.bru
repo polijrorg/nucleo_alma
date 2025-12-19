@@ -1,11 +1,11 @@
 meta {
-  name: delete user
+  name: email otp validation
   type: http
-  seq: 10
+  seq: 6
 }
 
 post {
-  url: {{baseUrl}}/auth/delete-user
+  url: {{baseUrl}}/auth/email-otp/check-verification-otp
   body: none
   auth: inherit
 }

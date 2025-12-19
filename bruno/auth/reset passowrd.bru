@@ -1,0 +1,20 @@
+meta {
+  name: reset passowrd
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/auth/email-otp/reset-password
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "user@email.com",
+    "otp": "123456",
+    "password": "NovaSenhaForte123"
+  }
+  
+}

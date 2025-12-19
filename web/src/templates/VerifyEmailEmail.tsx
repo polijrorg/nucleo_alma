@@ -1,7 +1,11 @@
 import * as React from "react";
 
-export function VerifyEmailEmail(props: { name?: string; verifyUrl: string }) {
-  const { name, verifyUrl } = props;
+export function VerifyEmailEmail(props: {
+  name?: string;
+  code: string;
+  expiresInMinutes?: number;
+}) {
+  const { name, code, expiresInMinutes = 10 } = props;
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif", lineHeight: 1.5 }}>
@@ -9,27 +13,41 @@ export function VerifyEmailEmail(props: { name?: string; verifyUrl: string }) {
 
       <p style={{ margin: "0 0 12px" }}>
         {name ? `Olá, ${name}!` : "Olá!"} Para concluir seu cadastro no Núcleo Alma,
-        confirme seu email clicando no botão abaixo.
+        digite o código abaixo no app para confirmar seu email.
       </p>
 
-      <p style={{ margin: "16px 0" }}>
-        <a
-          href={verifyUrl}
+      <div
+        style={{
+          margin: "16px 0",
+          padding: "14px",
+          borderRadius: 10,
+          border: "1px solid #e5e5e5",
+          background: "#fafafa",
+          textAlign: "center",
+        }}
+      >
+        <div style={{ fontSize: 12, color: "#555", marginBottom: 6 }}>
+          Seu código de verificação
+        </div>
+
+        <div
           style={{
-            display: "inline-block",
-            padding: "10px 14px",
-            textDecoration: "none",
-            borderRadius: 8,
-            background: "#111",
-            color: "#fff",
+            fontSize: 28,
+            fontWeight: 700,
+            letterSpacing: 6,
+            color: "#111",
           }}
         >
-          Confirmar email
-        </a>
-      </p>
+          {code}
+        </div>
+
+        <div style={{ fontSize: 12, color: "#555", marginTop: 8 }}>
+          Expira em {expiresInMinutes} minutos.
+        </div>
+      </div>
 
       <p style={{ margin: "16px 0 0", fontSize: 12, color: "#555" }}>
-        Se você não criou uma conta, pode ignorar este email.
+        Se você não criou uma conta, pode ignorar este email. Não compartilhe este código com ninguém.
       </p>
     </div>
   );
