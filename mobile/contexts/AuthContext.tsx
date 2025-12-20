@@ -52,22 +52,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, segments, isLoading, router])
 
-  const checkSession = async () => {
-    try {
-      const result = await authClient.getSession()
-      
-      if (result?.data?.user) {
-        setUser(result.data.user)
-      } else {
-        setUser(null)
-      }
-    } catch (error) {
-      console.error('Error checking session:', error)
-      setUser(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+
+  // Apenas para poder programar as demais telas enquanto o backend não está funcionando
+  const checkSession = async () => {
+  
+    setUser({
+      id: 'usuario-falso-123',
+      name: 'José Bezerra',
+      email: 'jose@email.com'
+    })
+    setIsLoading(false)
+    return; 
+
+
+    // O código original ficará "desligado" nesse momento
+    try {
+      const result = await authClient.getSession()
+      
+      if (result?.data?.user) {
+        setUser(result.data.user)
+      } else {
+        setUser(null)
+      }
+    } catch (error) {
+      console.error('Error checking session:', error)
+      setUser(null)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const refreshSession = async () => {
     await checkSession()
