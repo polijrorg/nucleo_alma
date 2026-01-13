@@ -65,8 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return; 
 
 
-    // O código original ficará "desligado" nesse momento
-    try {
+try {
       const result = await authClient.getSession()
       
       if (result?.data?.user) {

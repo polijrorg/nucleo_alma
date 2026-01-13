@@ -44,7 +44,7 @@ export default function SignUpScreen() {
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
         
         <View className="items-center mb-8">
-          <View className="w-20 h-20 bg-gradient-to-br from-blue-500 to-green-600 rounded-2xl justify-center items-center shadow-lg mb-4">
+          <View className="w-20 h-20 bg-teal-500 rounded-2xl justify-center items-center shadow-lg mb-4">
              <Activity size={40} color="white" />
           </View>
 
@@ -120,7 +120,7 @@ export default function SignUpScreen() {
             onPress={handleSignUp}
             disabled={isLoading}
             className={`flex-row justify-center items-center py-4 rounded-xl mb-6 ${
-              isLoading ? "bg-teal-300" : "bg-gradient-to-r from-blue-500 to-green-600"
+              isLoading ? "bg-teal-300" : "bg-blue-500"
             }`}
           >
             {isLoading ? (

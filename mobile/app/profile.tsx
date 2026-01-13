@@ -28,7 +28,7 @@ export default function Profile() {
           
           {/* Card de identificação */}
           <View className="bg-blue-100 w-full rounded-3xl p-6 items-center border border-slate-200 mb-6 shadow-sm shadow-cyan-100">
-            <View className="w-24 h-24 bg-gradient-to-br from-blue-500 to-green-600 rounded-full justify-center items-center mb-4 shadow-md shadow-teal-200">
+            <View className="w-24 h-24 bg-blue-500 rounded-full justify-center items-center mb-4 shadow-md shadow-teal-200">
               <Text className="text-white font-bold text-3xl">
                 {getInitials(user?.name || "Visitante")}
               </Text>
