@@ -38,7 +38,6 @@ export default function RecoverPasswordScreen() {
   };
 
   return (
-    // ADICIONEI DE VOLTA O KEYBOARDAVOIDINGVIEW AQUI
     <KeyboardAvoidingView 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-slate-50"
@@ -50,7 +49,7 @@ export default function RecoverPasswordScreen() {
         
         {/* Cabeçalho / Logo */}
         <View className="items-center mb-8">
-          <View className="w-20 h-20 bg-gradient-to-br from-blue-500 to-green-600 rounded-2xl justify-center items-center shadow-lg mb-4">
+          <View className="w-20 h-20 bg-teal-500 rounded-2xl justify-center items-center shadow-lg mb-4">
              <Activity size={40} color="white" />
           </View>
 
@@ -94,7 +93,7 @@ export default function RecoverPasswordScreen() {
             onPress={handleRecoverPassword}
             disabled={isLoading}
             className={`flex-row justify-center items-center py-4 rounded-xl mb-6 ${
-              isLoading ? "bg-teal-300" : "bg-gradient-to-r from-blue-500 to-green-600"
+              isLoading ? "bg-teal-300" : "bg-blue-500"
             }`}
           >
             {isLoading ? (
