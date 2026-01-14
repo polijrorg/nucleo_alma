@@ -14,44 +14,31 @@ enum Role {
   SUPER_ADMIN
 }
 
-// modelos de exemplo abaixo (pode deletar)
-model Curso {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  descricao String
-  slug      String @unique
-
-  materiasRelacionadas CursoMateriaRelacionada[]
+enum VideoStatus {
+  UPLOADING
+  UPLOADED
+  PROCESSING
+  READY
+  FAILED
 }
 
-model CursoMateriaRelacionada {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
+model Video {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
 
-  curso   Curso  @relation(fields: [cursoId], references: [id])
-  cursoId String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  materia   Materia @relation(fields: [materiaId], references: [id])
-  materiaId String
+  storageKeyOriginal String
+  mimeType  String
+  size      Int
+  status    VideoStatus @default(UPLOADING)
 
-  @@unique([cursoId, materiaId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Materia {
-  id                 String                    @id @default(uuid()) @map("_id")
-  name               String
-  descricao          String
-  cor                String
-  slug               String                    @unique
-  cursosRelacionados CursoMateriaRelacionada[]
-}
 
-model Licao {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId // id base do mongodb, + perfomance
-  name      String
-  descricao String
-  archived  Boolean? @default(false)
-}
-// modelos de exemplo acima (pode deletar)
+
 
 model User {
   // nao mexer entre aqui >
@@ -67,7 +54,7 @@ model User {
   role          Role      @default(USER)
   // < e aqui
 
-
+  videos        Video[]
 
   @@map("user")
 }
