@@ -60,6 +60,7 @@
     "prisma": "^6.18.0",
     "tailwindcss": "^4.1.16",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "tw-animate-css": "^1.3.4",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
