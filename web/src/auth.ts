@@ -15,18 +15,6 @@ import { VerifyEmailEmail } from "./templates/VerifyEmailEmail";
 
 type AuthUserMinimal = { email: string; name?: string | null };
 
-type VerificationEmailArgs = {
-  user: AuthUserMinimal;
-  url: string;
-  token: string;
-};
-
-type ResetPasswordArgs = {
-  user: AuthUserMinimal;
-  url: string;
-  token: string;
-};
-
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 
