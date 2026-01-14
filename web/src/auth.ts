@@ -4,7 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 
 import prisma from "./app/(backend)/services/db";
 
-import { customSession, emailOTP } from "better-auth/plugins";
+import { customSession } from "better-auth/plugins";
 import { expo } from "@better-auth/expo";
 
 import { getUserRole } from "@/backend/services/auth";
@@ -12,14 +12,62 @@ import { sendEmail } from "./lib/email";
 import { ResetPasswordEmail } from "./templates/ResetPasswordEmail";
 import { VerifyEmailEmail } from "./templates/VerifyEmailEmail";
 
+
+type AuthUserMinimal = { email: string; name?: string | null };
+
+type VerificationEmailArgs = {
+  user: AuthUserMinimal;
+  url: string;
+  token: string;
+};
+
+type ResetPasswordArgs = {
+  user: AuthUserMinimal;
+  url: string;
+  token: string;
+};
+
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 
-  database: prismaAdapter(prisma, { provider: "mongodb" }),
+  database: prismaAdapter(prisma, {
+    provider: "mongodb",
+  }),
+
+  emailVerification: {
+    sendOnSignIn: true,
+
+    sendVerificationEmail: async ({ user, url }) => {
+      void sendEmail({
+        to: user.email,
+        subject: "Confirme seu email — Núcleo Alma",
+        react: VerifyEmailEmail({
+          name: user.name ?? user.email,
+          verifyUrl: url,
+        }),
+      });
+    },
+
+  },
 
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+
+    sendResetPassword: async ({ user, url }: ResetPasswordArgs) => {
+      void sendEmail({
+        to: user.email,
+        subject: "Redefinir senha — Núcleo Alma",
+        react: ResetPasswordEmail({
+          name: user.name ?? user.email,
+          resetUrl: url,
+        }),
+      });
+    },
+
+    onPasswordReset: async ({ user }: { user: AuthUserMinimal }) => {
+      console.info("senha redefinida com sucesso:", user.email);
+    },
   },
 
   user: {
@@ -29,46 +77,10 @@ export const auth = betterAuth({
 
   plugins: [
     expo(),
-
-    emailOTP({
-      otpLength: 6,
-      expiresIn: 10 * 60,
-      allowedAttempts: 5,
-
-      overrideDefaultEmailVerification: true,
-
-      async sendVerificationOTP({ email, otp, type }) {
-        if (type === "email-verification") {
-          void sendEmail({
-            to: email,
-            subject: "Confirme seu email — Núcleo Alma",
-            react: VerifyEmailEmail({
-              code: otp,
-              name: email,
-            }),
-          });
-          return;
-        }
-
-        if (type === "forget-password") {
-          void sendEmail({
-            to: email,
-            subject: "Redefinir senha — Núcleo Alma",
-            react: ResetPasswordEmail({
-              code: otp,
-              name: email,
-            }),
-          });
-          return;
-        }
-      },
-    }),
-
     customSession(async ({ user, session }) => {
       const role = await getUserRole(session.userId);
       return { role, user, session };
     }),
-
     nextCookies(),
   ],
 

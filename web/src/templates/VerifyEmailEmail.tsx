@@ -1,11 +1,7 @@
 import * as React from "react";
 
-export function VerifyEmailEmail(props: {
-  name?: string;
-  code: string;
-  expiresInMinutes?: number;
-}) {
-  const { name, code, expiresInMinutes = 10 } = props;
+export function VerifyEmailEmail(props: { name?: string; verifyUrl: string }) {
+  const { name, verifyUrl } = props;
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif", lineHeight: 1.5 }}>
@@ -13,41 +9,27 @@ export function VerifyEmailEmail(props: {
 
       <p style={{ margin: "0 0 12px" }}>
         {name ? `Olá, ${name}!` : "Olá!"} Para concluir seu cadastro no Núcleo Alma,
-        digite o código abaixo no app para confirmar seu email.
+        confirme seu email clicando no botão abaixo.
       </p>
 
-      <div
-        style={{
-          margin: "16px 0",
-          padding: "14px",
-          borderRadius: 10,
-          border: "1px solid #e5e5e5",
-          background: "#fafafa",
-          textAlign: "center",
-        }}
-      >
-        <div style={{ fontSize: 12, color: "#555", marginBottom: 6 }}>
-          Seu código de verificação
-        </div>
-
-        <div
+      <p style={{ margin: "16px 0" }}>
+        <a
+          href={verifyUrl}
           style={{
-            fontSize: 28,
-            fontWeight: 700,
-            letterSpacing: 6,
-            color: "#111",
+            display: "inline-block",
+            padding: "10px 14px",
+            textDecoration: "none",
+            borderRadius: 8,
+            background: "#111",
+            color: "#fff",
           }}
         >
-          {code}
-        </div>
-
-        <div style={{ fontSize: 12, color: "#555", marginTop: 8 }}>
-          Expira em {expiresInMinutes} minutos.
-        </div>
-      </div>
+          Confirmar email
+        </a>
+      </p>
 
       <p style={{ margin: "16px 0 0", fontSize: 12, color: "#555" }}>
-        Se você não criou uma conta, pode ignorar este email. Não compartilhe este código com ninguém.
+        Se você não criou uma conta, pode ignorar este email.
       </p>
     </div>
   );
