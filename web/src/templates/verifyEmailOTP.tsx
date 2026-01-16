@@ -1,23 +1,23 @@
 import * as React from "react";
 
-type ResetPasswordEmailProps = {
+type VerifyEmailEmailProps = {
   name?: string;
   code: string;
 };
 
-export function ResetPasswordEmail({ name, code }: ResetPasswordEmailProps) {
+export function VerifyEmailEmail({ name, code }: VerifyEmailEmailProps) {
   return (
     <div style={container}>
       <div style={card}>
-        <h1 style={title}>Redefinir senha</h1>
+        <h1 style={title}>Confirme seu e-mail</h1>
 
         <p style={text}>
           Olá{ name ? `, ${name}` : "" }!
         </p>
 
         <p style={text}>
-          Recebemos um pedido para redefinir sua senha. Use o código abaixo para
-          continuar o processo:
+          Use o código abaixo para confirmar seu e-mail. Ele é válido por alguns
+          minutos:
         </p>
 
         <div style={codeBox}>
@@ -25,7 +25,8 @@ export function ResetPasswordEmail({ name, code }: ResetPasswordEmailProps) {
         </div>
 
         <p style={hint}>
-          Se você não solicitou esta ação, pode ignorar este e-mail com segurança.
+          Se você não solicitou este código, pode ignorar este e-mail com
+          segurança.
         </p>
 
         <hr style={divider} />
