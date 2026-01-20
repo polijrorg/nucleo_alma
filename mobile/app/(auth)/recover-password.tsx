@@ -23,9 +23,11 @@ export default function RecoverPasswordScreen() {
       
       if (result?.success) {
         Alert.alert(
-          "Email Enviado", 
-          "Verifique sua caixa de entrada para redefinir a senha.",
-          [{ text: "OK", onPress: () => router.back() }]
+          "Código Enviado", 
+          "Verifique seu email e copie o código de 6 dígitos.",
+          [{ 
+            onPress: () => router.push(`/(auth)/verification-code`) 
+          }]
         );
       } else {
         Alert.alert("Erro", result?.error || "Não foi possível enviar o email.");
@@ -66,8 +68,8 @@ export default function RecoverPasswordScreen() {
           
           <View className="items-center mb-6">
             <Text className="text-xl font-bold text-slate-800">Recuperar Senha</Text>
-            <Text className="text-slate-400 text-sm mt-1 text-center">
-              Enviaremos um link para redefinir sua senha
+            <Text className="text-slate-500 text-sm mt-1 text-center">
+              Enviaremos um código para redefinir sua senha
             </Text>
           </View>
 
@@ -90,7 +92,7 @@ export default function RecoverPasswordScreen() {
 
           {/* Botão de Enviar */}
           <TouchableOpacity
-            onPress={handleRecoverPassword}
+            onPress={() => router.push('/(auth)/verification-code')}
             disabled={isLoading}
             className={`flex-row justify-center items-center py-4 rounded-xl mb-6 ${
               isLoading ? "bg-teal-300" : "bg-blue-500"

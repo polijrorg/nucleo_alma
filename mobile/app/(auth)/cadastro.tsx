@@ -41,7 +41,8 @@ export default function SignUpScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-slate-50"
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}
+        keyboardShouldPersistTaps="handled">
         
         <View className="items-center mb-8">
           <View className="w-20 h-20 bg-teal-500 rounded-2xl justify-center items-center shadow-lg mb-4">
@@ -137,8 +138,8 @@ export default function SignUpScreen() {
           <View className="flex-row justify-center mt-2">
             <Text className="text-slate-500">Já tem conta? </Text>
             <TouchableOpacity onPress={() => router.back()}>
-     <Text className="text-teal-600 font-bold">Entre</Text>
-  </TouchableOpacity>
+            <Text className="text-teal-600 font-bold">Entre</Text>
+            </TouchableOpacity>
           </View>
 
         </View>
