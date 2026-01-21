@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-export const idSchema = z.string().uuid('ID inválido');
+export const idSchema = z
+  .string()
+  .regex(/^[A-Za-z0-9]+$/, "ID Inválido")
+  .min(10, "ID Inválido")
+  .max(128, "ID Inválido");
 
 export const passwordSchema = z
     .string()
