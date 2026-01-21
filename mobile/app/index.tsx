@@ -3,52 +3,20 @@ import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Camera, Activity, TrendingUp, Upload } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router'; 
+import { useNavigation } from '@react-navigation/native';
 
 import { useAuth } from '~/contexts/AuthContext';
 import { BottomTabs } from '../components/BottomTabs';
 import { getInitials } from '~/utils/auxfunctions';
 
 export default function Home() {
+  const navigation = useNavigation<any>(); 
+  
   const { user } = useAuth();
   const firstName = user?.name ? user.name.split(' ')[0] : "Visitante";
 
-  // Estado para guardar o vídeo temporariamente 
   const [videoUri, setVideoUri] = useState<string | null>(null);
-
-  const handleRecordMovement = async () => {
-    try {
-      // Pede permissão de câmera
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      
-      if (status !== 'granted') {
-        Alert.alert(
-          "Permissão Negada", 
-          "Precisamos de acesso à câmera para gravar seus movimentos."
-        );
-        return;
-      }
-
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-        allowsEditing: true, 
-        quality: 1,
-        videoMaxDuration: 60, 
-      });
-
-      if (!result.canceled) {
-        const recordedVideo = result.assets[0].uri;
-        console.log("Vídeo salvo em:", recordedVideo);
-        setVideoUri(recordedVideo);
-        
-        Alert.alert("Sucesso", "Gravação realizada com sucesso!");
-        // Falta o back para salvar no banco ou enviar para a API
-      }
-
-    } catch (error) {
-      console.error("Erro ao abrir câmera:", error);
-      Alert.alert("Erro", "Não foi possível abrir a câmera.");
-    }
-  };
 
   const handleSelectVideo = async () => {
     try {
@@ -61,9 +29,7 @@ export default function Home() {
       if (!result.canceled) {
         const selectedVideo = result.assets[0].uri;
         console.log("Vídeo da galeria:", selectedVideo);
-        
         setVideoUri(selectedVideo);
-        
         Alert.alert("Vídeo Selecionado", "O vídeo foi carregado e está pronto para envio.");
       }
     } catch (error) {
@@ -79,7 +45,6 @@ export default function Home() {
           
           {/* Cabeçalho */}
           <View className="px-6 pt-6 mb-8 flex-row justify-between items-center">
-            {/* Nome */}
             <View className="flex-1 mr-4">
               <Text className="text-2xl font-bold text-slate-800" numberOfLines={1}>
                 Bom dia, <Text className="text-slate-800">{firstName}</Text>
@@ -89,7 +54,6 @@ export default function Home() {
               </Text>
             </View>
 
-            {/* Avatar */}
             <View className="w-12 h-12 bg-blue-500 rounded-full justify-center items-center shadow-sm shadow-teal-200">
               <Text className="text-white font-bold text-lg">
                 {getInitials(user?.name || "")}
@@ -99,25 +63,18 @@ export default function Home() {
 
           {/* Estatísticas */}
           <View className="flex-row justify-between px-6 mb-8">
-            {/* Card 1 */}
             <View className="w-[22%] aspect-square bg-blue-50 rounded-2xl justify-center items-center border border-slate-200">
               <Text className="text-xl font-bold text-slate-800 mb-1">2</Text>
               <Text className="text-xs text-slate-800 font-medium">Hoje</Text>
             </View>
-
-            {/* Card 2 */}
             <View className="w-[22%] aspect-square bg-emerald-50 rounded-2xl justify-center items-center border border-slate-200">
               <Text className="text-xl font-bold text-slate-800 mb-1">86%</Text>
               <Text className="text-xs text-slate-800 font-medium">Pontuação</Text>
             </View>
-
-            {/* Card 3 */}
             <View className="w-[22%] aspect-square bg-orange-50 rounded-2xl justify-center items-center border border-slate-200">
               <Text className="text-xl font-bold text-slate-800 mb-1">7</Text>
               <Text className="text-xs text-slate-800 font-medium">Dias</Text>
             </View>
-
-            {/* Card 4 */}
             <View className="w-[22%] aspect-square bg-slate-100 rounded-2xl justify-center items-center border border-slate-200">
               <Text className="text-xl font-bold text-slate-800 mb-1">45m</Text>
               <Text className="text-xs text-slate-800 font-medium">Tempo</Text>
@@ -128,7 +85,7 @@ export default function Home() {
           <View className="justify-center items-center px-6 mb-8">
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={handleRecordMovement}
+              onPress={() => router.push('/instruction-camera')}
               className="bg-blue-500 flex-row items-center justify-center py-4 w-full rounded-xl"
             >
               <Camera size={24} color="white" style={{ marginRight: 10 }} />
@@ -143,7 +100,7 @@ export default function Home() {
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={handleSelectVideo}
-              className="bg-white flex-row items-center justify-center py-4 w-full rounded-xl  border border-slate-300"
+              className="bg-white flex-row items-center justify-center py-4 w-full rounded-xl border border-slate-300"
             >
               <Upload size={24} color="black" style={{ marginRight: 10 }} />
               <Text className="text-black font-bold text-base">
@@ -187,6 +144,7 @@ export default function Home() {
               </View>
             </View>
           </View>
+
         </ScrollView>
       </View>
       <BottomTabs activeTab="home" />
