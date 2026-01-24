@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, FlatList, Dimensions, TouchableOpacity, StyleSheet, ViewToken, Alert } from 'react-native';
+import { View, Text, FlatList, Dimensions, TouchableOpacity, StyleSheet, ViewToken } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Camera, Smartphone, Lightbulb, CirclePlay } from 'lucide-react-native'; 
-import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router'; 
 
 const { width } = Dimensions.get('window');
 
@@ -11,7 +11,7 @@ const STEPS = [
     id: '1',
     title: 'Bem-vindo ao Tutorial!',
     description: 'Vamos te ensinar como gravar seus movimentos de forma perfeita para obter os melhores resultados na sua reabilitação.',
-    tips: ['4 passos simples', 'Dicas de posicionamento', 'Configuração ideal'], 
+    tips: ['3 passos simples', 'Dicas de posicionamento', 'Configuração ideal'], 
     icon: Camera
   },
   {
@@ -32,7 +32,7 @@ const STEPS = [
     id: '4',
     title: 'Pronto para Começar!',
     description: 'Você está preparado para gravar seus movimentos e acompanhar seu progresso.',
-    tips: ['Mantenha-se relaxado', 'Siga as instruções de voz', 'Não se preocupe com perfeição'], 
+    tips: ['Mantenha-se relaxado', 'Complete a amplitude do movimento', 'Você pode regravar se necessário'], 
     icon: CirclePlay
   },
 ];
@@ -43,45 +43,14 @@ interface Props {
 
 export default function TutorialScreen({ navigation }: Props) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [videoUri, setVideoUri] = useState<string | null>(null);
   
   const flatListRef = useRef<FlatList>(null);
-
-  const handleRecordMovement = async () => {
-    try {
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      
-      if (status !== 'granted') {
-        Alert.alert("Permissão Negada", "Precisamos de acesso à câmera.");
-        return;
-      }
-
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-        allowsEditing: true, 
-        quality: 1,
-        videoMaxDuration: 60, 
-      });
-
-      if (!result.canceled) {
-        const recordedVideo = result.assets[0].uri;
-        console.log("Vídeo salvo em:", recordedVideo);
-        setVideoUri(recordedVideo); 
-        
-        Alert.alert("Sucesso", "Gravação realizada!");
-      }
-
-    } catch (error) {
-      console.error("Erro ao abrir câmera:", error);
-      Alert.alert("Erro", "Não foi possível abrir a câmera.");
-    }
-  };
 
   const handleNext = () => {
     if (currentStep < STEPS.length - 1) {
       flatListRef.current?.scrollToIndex({ index: currentStep + 1 });
     } else {
-      handleRecordMovement(); 
+      router.push('/movements'); 
     }
   };
 
@@ -123,11 +92,11 @@ const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
   return (
     <SafeAreaView style={styles.container}>
       
-      {/* Header */}
+      {/* Cabeçalho */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Tutorial de Gravação</Text>
         
-        <TouchableOpacity onPress={handleRecordMovement}>
+        <TouchableOpacity onPress={() => router.push('/movements')}> 
           <Text style={styles.navText}>Pular</Text>
         </TouchableOpacity>
       </View>
