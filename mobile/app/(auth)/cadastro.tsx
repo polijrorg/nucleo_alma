@@ -36,6 +36,31 @@ export default function SignUpScreen() {
     );
   }
 
+  async function registerUser() {
+  const res = await fetch("/auth/sign-up/email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", 
+    body: JSON.stringify({
+      email: "teste@nucleoalma.com",
+      password: "SenhaForte123!",
+      name: "Usuário Teste",
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    console.error("Erro no cadastro:", data);
+    throw new Error(data?.error?.message || "Erro ao registrar");
+  }
+
+  console.log("Cadastro iniciado:", data);
+  return data;
+}
+
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -118,7 +143,7 @@ export default function SignUpScreen() {
 
           {/* Botão Criar Conta */}
           <TouchableOpacity
-            onPress={handleSignUp}
+            onPress={registerUser}
             disabled={isLoading}
             className={`flex-row justify-center items-center py-4 rounded-xl mb-6 ${
               isLoading ? "bg-teal-300" : "bg-blue-500"

@@ -56,6 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Apenas para poder programar as demais telas enquanto o backend não está funcionando
   const checkSession = async () => {
   
+  
     setUser({
       id: 'usuario-falso-123',
       name: 'José Bezerra',
