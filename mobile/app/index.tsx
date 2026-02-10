@@ -16,28 +16,6 @@ export default function Home() {
   const { user } = useAuth();
   const firstName = user?.name ? user.name.split(' ')[0] : "Visitante";
 
-  const [videoUri, setVideoUri] = useState<string | null>(null);
-
-  const handleSelectVideo = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Videos, 
-        allowsEditing: true,
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        const selectedVideo = result.assets[0].uri;
-        console.log("Vídeo da galeria:", selectedVideo);
-        setVideoUri(selectedVideo);
-        Alert.alert("Vídeo Selecionado", "O vídeo foi carregado e está pronto para envio.");
-      }
-    } catch (error) {
-      console.error("Erro ao selecionar vídeo:", error);
-      Alert.alert("Erro", "Não foi possível acessar a galeria.");
-    }
-  };
-
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       <View className="flex-1 bg-slate-50">
@@ -95,19 +73,6 @@ export default function Home() {
             </TouchableOpacity>
           </View>
 
-          {/* Enviar vídeo */}
-          <View className="justify-center items-center px-6 mb-8">
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={handleSelectVideo}
-              className="bg-white flex-row items-center justify-center py-4 w-full rounded-xl border border-slate-300"
-            >
-              <Upload size={24} color="black" style={{ marginRight: 10 }} />
-              <Text className="text-black font-bold text-base">
-                Enviar Vídeo de Movimento
-              </Text>
-            </TouchableOpacity>
-          </View>
 
           {/* Mapa de mobilidade */}
           <View className="px-6 mb-8">
